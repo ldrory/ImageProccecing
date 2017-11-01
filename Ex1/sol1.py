@@ -134,7 +134,7 @@ def histogram_equalize(im_orig):          #input: grayscale or RGB with [0,1] va
 
 # def quantize(im_orig, n_quant, n_iter):
 
-image = read_image("C:\\Users\\Liran\\Desktop\\monkey.jpg",RGB)
+image = read_image("C:\\Users\\Liran\\Desktop\\Low Contrast.jpg",RGB)
 
 im, hist_orig, hist_eq  = histogram_equalize(image)
 
