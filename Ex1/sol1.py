@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pylab as plt
 from scipy.misc import imread as imread
 from skimage.color import rgb2gray
+import math
 
 #np.set_printoptions(threshold=np.inf)
 
@@ -23,7 +24,7 @@ def read_image(filename, representation):
     im = imread(filename)
 
     if representation == RGB:
-        im_float = im.astype(np.float32)    # pixels to float
+        im_float = im.astype(np.float64)    # pixels to float
         im_float /= 255                     # pixels [0,1]
         return im_float
 
@@ -119,7 +120,7 @@ def histogram_equalize(im_orig):          #input: grayscale or RGB with [0,1] va
 
 
     # pixels to float
-    im_eq = (sk[(im*255).astype(int)]).astype(np.float32)/255
+    im_eq = (sk[(im*255).astype(int)]).astype(np.float64)/255
 
 
     # histogram of original & new image
@@ -132,11 +133,76 @@ def histogram_equalize(im_orig):          #input: grayscale or RGB with [0,1] va
 
     return [im_eq, hist_orig, hist_eq]
 
-# def quantize(im_orig, n_quant, n_iter):
+def quantize(im_orig, n_quant, n_iter):
 
-image = read_image("C:\\Users\\Liran\\Desktop\\Low Contrast.jpg",RGB)
+    # some identities
+    hieght, width = im_orig.shape[HIEGTH], im_orig.shape[WIDTH]
+    n_pixels = hieght*width
+    originaly_colorful = False
+    im = im_orig
 
-im, hist_orig, hist_eq  = histogram_equalize(image)
+    # check if picture is rgb or gray
+    if len(im_orig.shape) == 3:
+        originaly_colorful = True
+        im_yiq = rgb2yiq(im_orig)
+        Y  = im_yiq[:, :, 0]
+        I  = im_yiq[:, :, 1]
+        Q  = im_yiq[:, :, 2]
+        im = Y
+
+
+    # calculate histogram and cumulative function
+    h, bins = np.histogram(im*SHADES_OF_GRAY, bins=np.arange(SHADES_OF_GRAY+2))
+    min = np.array([])
+
+
+    #initialized of z and q
+    z = np.linspace(0,255,n_quant+1)
+    q = np.zeros(n_quant)
+    Enew = float('inf')
+
+    for j in range(n_iter):
+        min_z = z
+        min_q = q
+        Eold = Enew
+
+        for i in range(n_quant):
+            z[i] = (q[i]+q[i+1])/2
+            q_down = np.sum(h[np.arange(z[i], z[i + 1])])
+            q_up = np.sum(np.multiply(np.arange(z[i], z[i + 1]),
+                                      h[np.arange(z[i], z[i + 1])]))
+            q[i] = q_up / q_down
+
+        for i in range(n_quant):
+            for z in range(z[i],z[i+1]):
+                Enew = ((q[i]-z)^2)*h(z)
+
+        if Eold < Enew:
+            break
+
+    lut = np.zeros(256)
+    for z in min_z:
+        i = 0
+        lut = np.append([q[i]]*min_z)
+        i += 1
+
+    im_quant = lut[im]
+
+
+
+
+
+    if originaly_colorful:
+        im_quant = yiq2rgb(np.dstack((im_quant, I, Q)))
+        im_quant.clip(0,1,im_eq)
+
+    #return [im_quant, error]
+    return im_quant
+
+
+image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
+
+im  = quantize(image,3,2)
 
 plt.imshow(image)
 plt.show()
@@ -144,16 +210,35 @@ plt.show()
 plt.imshow(im)
 plt.show()
 
-plt.bar(np.arange(256), hist_orig)
-plt.show()
-plt.bar(np.arange(256), hist_eq)
-plt.show()
-plt.bar(np.arange(256), np.cumsum(hist_orig))
-plt.show()
-plt.bar(np.arange(256), np.cumsum(hist_eq))
-plt.show()
 
 
+
+
+
+
+
+
+# check HISTOGRAM ###############
+# image = read_image("C:\\Users\\Liran\\Desktop\\Low Contrast.jpg",RGB)
+#
+# im, hist_orig, hist_eq  = histogram_equalize(image)
+#
+# plt.imshow(image)
+# plt.show()
+#
+# plt.imshow(im)
+# plt.show()
+#
+# plt.bar(np.arange(256), hist_orig)
+# plt.show()
+# plt.bar(np.arange(256), hist_eq)
+# plt.show()
+# plt.bar(np.arange(256), np.cumsum(hist_orig))
+# plt.show()
+# plt.bar(np.arange(256), np.cumsum(hist_eq))
+# plt.show()
+## check HISTOGRAM ###############
+#
 
 
 
