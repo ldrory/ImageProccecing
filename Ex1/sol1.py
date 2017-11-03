@@ -198,30 +198,11 @@ def quantize(im_orig, n_quant, n_iter):
 
     #return [im_quant, error]
     return im_quant
-
-
-image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
-
-im  = quantize(image,3,2)
-
-plt.imshow(image)
-plt.show()
-
-plt.imshow(im)
-plt.show()
-
-
-
-
-
-
-
-
-
-# check HISTOGRAM ###############
-# image = read_image("C:\\Users\\Liran\\Desktop\\Low Contrast.jpg",RGB)
 #
-# im, hist_orig, hist_eq  = histogram_equalize(image)
+#
+# image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
+#
+# im  = quantize(image,3,2)
 #
 # plt.imshow(image)
 # plt.show()
@@ -229,14 +210,33 @@ plt.show()
 # plt.imshow(im)
 # plt.show()
 #
-# plt.bar(np.arange(256), hist_orig)
-# plt.show()
-# plt.bar(np.arange(256), hist_eq)
-# plt.show()
-# plt.bar(np.arange(256), np.cumsum(hist_orig))
-# plt.show()
-# plt.bar(np.arange(256), np.cumsum(hist_eq))
-# plt.show()
+#
+#
+#
+#
+
+
+
+
+# check HISTOGRAM ###############
+image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
+
+im, hist_orig, hist_eq  = histogram_equalize(image)
+
+plt.imshow(image)
+plt.show()
+
+plt.imshow(im)
+plt.show()
+
+plt.bar(np.arange(256), hist_orig)
+plt.show()
+plt.bar(np.arange(256), hist_eq)
+plt.show()
+plt.bar(np.arange(256), np.cumsum(hist_orig))
+plt.show()
+plt.bar(np.arange(256), np.cumsum(hist_eq))
+plt.show()
 ## check HISTOGRAM ###############
 #
 
