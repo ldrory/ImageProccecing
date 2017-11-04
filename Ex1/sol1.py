@@ -150,65 +150,86 @@ def quantize(im_orig, n_quant, n_iter):
         Q  = im_yiq[:, :, 2]
         im = Y
 
+    plt.imshow(im, cmap=plt.cm.gray)  # present
+    plt.show()
 
     # calculate histogram and cumulative function
     h, bins = np.histogram(im*SHADES_OF_GRAY, bins=np.arange(SHADES_OF_GRAY+2))
-    min = np.array([])
-
+    plt.bar(np.arange(256), h)
+    plt.show()
 
     #initialized of z and q
     z = np.linspace(0,255,n_quant+1)
     q = np.zeros(n_quant)
     Enew = float('inf')
+    error = np.array([])
 
     for j in range(n_iter):
-        min_z = z
-        min_q = q
+        min_z = z.copy()
+        min_q = q.copy()
         Eold = Enew
 
-        for i in range(n_quant):
-            z[i] = (q[i]+q[i+1])/2
-            q_down = np.sum(h[np.arange(z[i], z[i + 1])])
-            q_up = np.sum(np.multiply(np.arange(z[i], z[i + 1]),
-                                      h[np.arange(z[i], z[i + 1])]))
-            q[i] = q_up / q_down
 
         for i in range(n_quant):
-            for z in range(z[i],z[i+1]):
-                Enew = ((q[i]-z)^2)*h(z)
+            p = h[(np.arange(z[i], z[i + 1])).astype(int)]
+            q_down = np.sum(p)
+            q_up = np.sum(np.multiply(np.arange(z[i], z[i + 1]),
+                                      h[(np.arange(z[i], z[i + 1])).astype(int)]))
+
+            q[i] = q_up / q_down
+
+            if (i==0 or i==n_quant):
+                continue
+            else:
+                z[i] = (q[i-1]+q[i])/2
+
+
+        for i in range(n_quant):
+            for zk in range(int(z[i]),int(z[i+1])):
+                Enew = pow(q[i]-zk,2)*h[zk]
+                error = np.append(error,Enew)
+
 
         if Eold < Enew:
             break
 
     lut = np.zeros(256)
-    for z in min_z:
-        i = 0
-        lut = np.append([q[i]]*min_z)
-        i += 1
+    i = 0
+    min_z = min_z.astype(int)
+    min_q = min_q.astype(int)
+    for i in range(n_quant):
+        np.put(lut,np.arange(min_z[i],min_z[i+1]+1),[min_q[i]])
 
-    im_quant = lut[im]
+    plt.bar(np.arange(256), lut)
+    plt.show()
 
+    im_quant = (lut[(im*255).astype(int)]).astype(np.float64)/255
 
+    plt.imshow(im_quant, cmap=plt.cm.gray)  # present
+    plt.show()
 
-
+    # calculate histogram and cumulative function
+    hist_quant, bins = np.histogram(im_quant*SHADES_OF_GRAY, bins=np.arange(SHADES_OF_GRAY+2))
+    plt.bar(np.arange(256), hist_quant)
+    plt.show()
 
     if originaly_colorful:
         im_quant = yiq2rgb(np.dstack((im_quant, I, Q)))
-        im_quant.clip(0,1,im_eq)
+        im_quant.clip(0,1,im_quant)
 
-    #return [im_quant, error]
-    return im_quant
+    return [im_quant, error]
+    #return im_quant
 #
 #
-# image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
-#
-# im  = quantize(image,3,2)
-#
-# plt.imshow(image)
-# plt.show()
-#
-# plt.imshow(im)
-# plt.show()
+image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
+
+im, error  = quantize(image,3,10000)
+
+plt.imshow(image)
+plt.show()
+
+plt.imshow(im)
+plt.show()
 #
 #
 #
@@ -219,24 +240,24 @@ def quantize(im_orig, n_quant, n_iter):
 
 
 # check HISTOGRAM ###############
-image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
-
-im, hist_orig, hist_eq  = histogram_equalize(image)
-
-plt.imshow(image)
-plt.show()
-
-plt.imshow(im)
-plt.show()
-
-plt.bar(np.arange(256), hist_orig)
-plt.show()
-plt.bar(np.arange(256), hist_eq)
-plt.show()
-plt.bar(np.arange(256), np.cumsum(hist_orig))
-plt.show()
-plt.bar(np.arange(256), np.cumsum(hist_eq))
-plt.show()
+# image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
+#
+# im, hist_orig, hist_eq  = histogram_equalize(image)
+#
+# plt.imshow(image)
+# plt.show()
+#
+# plt.imshow(im)
+# plt.show()
+#
+# plt.bar(np.arange(256), hist_orig)
+# plt.show()
+# plt.bar(np.arange(256), hist_eq)
+# plt.show()
+# plt.bar(np.arange(256), np.cumsum(hist_orig))
+# plt.show()
+# plt.bar(np.arange(256), np.cumsum(hist_eq))
+# plt.show()
 ## check HISTOGRAM ###############
 #
 
