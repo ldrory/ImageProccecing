@@ -164,11 +164,19 @@ def quantize(im_orig, n_quant, n_iter):
     Enew = float('inf')
     error = np.array([])
 
+    comulative_hist = h.cumsum()
+    eachZone = n_pixels/n_quant
+    for i in range(n_quant+1):
+        if (i != 0 and i != n_quant):
+            equal = np.where(comulative_hist >= eachZone*i)
+            z[i]=equal[0][0]
+
+
+
     for j in range(n_iter):
         min_z = z.copy()
         min_q = q.copy()
         Eold = Enew
-
 
         for i in range(n_quant):
             p = h[(np.arange(z[i], z[i + 1])).astype(int)]
@@ -187,21 +195,22 @@ def quantize(im_orig, n_quant, n_iter):
         for i in range(n_quant):
             for zk in range(int(z[i]),int(z[i+1])):
                 Enew = pow(q[i]-zk,2)*h[zk]
-                error = np.append(error,Enew)
+            error = np.append(error,Enew)
 
+        # plt.bar(np.arange(256), h)
+        # plt.bar(q.astype(int), q.astype(int)+102, color = ['red'])
+        # plt.show()
 
         if Eold < Enew:
             break
+
 
     lut = np.zeros(256)
     i = 0
     min_z = min_z.astype(int)
     min_q = min_q.astype(int)
     for i in range(n_quant):
-        np.put(lut,np.arange(min_z[i],min_z[i+1]+1),[min_q[i]])
-
-    plt.bar(np.arange(256), lut)
-    plt.show()
+        np.put(lut,np.arange(min_z[i],min_z[i+1]+1),h[min_q[i]])
 
     im_quant = (lut[(im*255).astype(int)]).astype(np.float64)/255
 
@@ -218,18 +227,22 @@ def quantize(im_orig, n_quant, n_iter):
         im_quant.clip(0,1,im_quant)
 
     return [im_quant, error]
-    #return im_quant
+
 #
 #
-image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
+image = read_image("C:\\Users\\Liran\\Desktop\\gray_orig.png",GRAYSCAL)
 
-im, error  = quantize(image,3,10000)
+im, error  = quantize(image,3,150)
 
-plt.imshow(image)
+plt.plot(error)
 plt.show()
 
-plt.imshow(im)
-plt.show()
+
+# plt.imshow(image)
+# plt.show()
+#
+# plt.imshow(im)
+# plt.show()
 #
 #
 #
