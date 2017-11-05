@@ -142,6 +142,7 @@ def quantize(im_orig, n_quant, n_iter):
     im = im_orig
 
     # check if picture is rgb or gray
+    print(im_orig.shape)
     if len(im_orig.shape) == 3:
         originaly_colorful = True
         im_yiq = rgb2yiq(im_orig)
@@ -169,7 +170,6 @@ def quantize(im_orig, n_quant, n_iter):
         if (i != 0 and i != n_quant):
             equal = np.where(comulative_hist >= eachZone*i)
             z[i] = equal[0][0]
-    print(z)
 
     while(n_iter):
         n_iter -= 1
@@ -218,6 +218,7 @@ def quantize(im_orig, n_quant, n_iter):
     plt.bar(np.arange(256), lut)
     plt.show()
 
+    print(im)
     im_quant = (lut[(im*255).astype(int)]).astype(np.float64)/255
 
     plt.imshow(im_quant, cmap=plt.cm.gray)  # present
@@ -236,7 +237,7 @@ def quantize(im_orig, n_quant, n_iter):
 
 #
 #
-image = read_image("C:\\Users\\Liran\\Desktop\\rgb_orig.png",RGB)
+image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
 
 im, error  = quantize(image,3,1000)
 
