@@ -1,3 +1,5 @@
+__author__ = "Liran Drory"
+
 import numpy as np
 import matplotlib.pylab as plt
 from scipy.misc import imread as imread
@@ -293,10 +295,11 @@ def quantize(im_orig, n_quant, n_iter):
                 Enew.append(pow(q[i]-zk, 2)*h[zk])
 
         Enew = sum(Enew)
-        error = np.append(error, Enew)
 
         if Eold <= Enew:
             break
+
+        error = np.append(error, Enew)
 
     # update the look up table by the q's
     lut = np.zeros(256)

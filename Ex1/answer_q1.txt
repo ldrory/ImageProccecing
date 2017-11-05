@@ -1,0 +1,6 @@
+Q1: if a division will have a gray level segment
+with no pixels the procedure will crash
+
+A1: because if there is no pixels between a segment
+    the denominator of q will be 0 (sum of (h[q]=0))
+    and therefor dividing by zero will crash

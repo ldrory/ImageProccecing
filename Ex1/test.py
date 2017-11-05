@@ -1,16 +1,18 @@
 from sol1 import *
 
 ###############CHECK QUANTIZE################################
-#
+
 # image = read_image("C:\\Users\\Liran\\Desktop\\gray_orig.png",RGB)
 #
-# im, error  = quantize(image, 3, 1000)
+# im, error  = quantize(image, 40, 1000)
 #
 # plt.imshow(im, cmap=plt.cm.gray)
 # plt.show()
 #
+# print(error)
+# plt.plot(error)
+# plt.show()
 
-#
 #####################################################
 
 
