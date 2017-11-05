@@ -2,9 +2,6 @@ import numpy as np
 import matplotlib.pylab as plt
 from scipy.misc import imread as imread
 from skimage.color import rgb2gray
-import math
-
-#np.set_printoptions(threshold=np.inf)
 
 GRAYSCAL = 1
 GRAYSCAL_MATRIX = 2
@@ -13,14 +10,32 @@ RGB_MATRIX = 3
 HIEGTH = 0
 WIDTH = 1
 SHADES_OF_GRAY = 255
+COLORFULL = 3
 
-# filename - string containing the image filename to read.
-# representation - representation code,
-# either 1 or 2 defining whether the output
-# should be a greyscale image (1) or an RGB image (2).
+
 def read_image(filename, representation):
+    """
+    Read Image and return matrix [0,1] float64
+    Gray scale - 2D
+    RGB - 3D
 
-    # load the image
+    Parameters
+    ----------
+    :param filename: str
+        string containing the image filename to read (PATH)
+
+    :param representation: int
+        either 1 or 2 defining whether the output
+        should be a greyscale image (1) or an RGB image (2).
+
+    Returns
+    -------
+    :return numpy array with either 2D matrix or 3D matrix
+            describing the pixels of the image
+
+    """
+
+    # loads the image
     im = imread(filename)
 
     if representation == RGB:
@@ -33,8 +48,26 @@ def read_image(filename, representation):
         return im_g
 
 def imdisplay(filename, representation):
+    """
+    Reads image and plot it as GRAY or RGB
+    depends on the color
 
-    # read image to im
+    Parameters
+    ----------
+    :param filename: str
+        string containing the image filename to read (PATH)
+
+    :param representation: int
+        either 1 or 2 defining whether the output
+        should be a greyscale image (1) or an RGB image (2).
+
+    Returns
+    -------
+    :return void
+
+    """
+
+    # read image to im matrix
     im = read_image(filename, representation)
 
     # if image is gray than show on intensity
@@ -44,10 +77,24 @@ def imdisplay(filename, representation):
 
     # if image is RGB than show on rgb
     if len(im.shape) == RGB_MATRIX:
-        plt.imshow(im)
+        plt.imshow(im)                    # present
         plt.show()
 
 def rgb2yiq(imRGB):
+    """
+    transform RGB image to YIQ by constant matrix
+
+    Parameters
+    ----------
+    :param imRGB: numpy.array
+        3D pixels matrix of the imRGB
+
+    Returns
+    -------
+    :return imYIQ: numpy.array
+        3D matrix of YIQ image
+
+    """
 
     # define the rgb2yiq matrix
     rgb2yiq_matrix = np.array([[0.299, 0.578, 0.144],
@@ -59,14 +106,27 @@ def rgb2yiq(imRGB):
     B = np.array(imRGB)[:, :, 2]
 
     # matrix calculation
-    Y = (np.array(rgb2yiq_matrix[0][0] * R + rgb2yiq_matrix[0][1] * G + rgb2yiq_matrix[0][2] * B)).clip(0,1)
-    I = (np.array(rgb2yiq_matrix[1][0] * R + rgb2yiq_matrix[1][1] * G + rgb2yiq_matrix[1][2] * B)).clip(-0.5957,0.5957)
-    Q = (np.array(rgb2yiq_matrix[2][0] * R + rgb2yiq_matrix[2][1] * G + rgb2yiq_matrix[2][2] * B)).clip(-0.5226,0.5226)
+    Y = (np.array(rgb2yiq_matrix[0][0] * R + rgb2yiq_matrix[0][1] * G + rgb2yiq_matrix[0][2] * B))
+    I = (np.array(rgb2yiq_matrix[1][0] * R + rgb2yiq_matrix[1][1] * G + rgb2yiq_matrix[1][2] * B))
+    Q = (np.array(rgb2yiq_matrix[2][0] * R + rgb2yiq_matrix[2][1] * G + rgb2yiq_matrix[2][2] * B))
 
     # return the imYIQ
     return np.dstack((Y, I, Q))
 
 def yiq2rgb(imYIQ):
+    """
+    transform YIQ image to RGB by constant matrix
+
+    Parameters
+    ----------
+    :param imYIQ: numpy.array
+        3D pixels matrix of the imYIQ
+    Returns
+    -------
+    :return imRGB: numpy.array
+        3D matrix of RGB image
+
+    """
 
     # define the yiq2rgb matrix
     yiq2rgb_matrix = np.array([ [1,  0.956,  0.621],
@@ -83,19 +143,37 @@ def yiq2rgb(imYIQ):
     B = np.array(yiq2rgb_matrix[2][0] * Y + yiq2rgb_matrix[2][1] * I + yiq2rgb_matrix[2][2] * Q)
 
     # return the imYIQ
-    return np.dstack((R, G, B)).clip(0,1)
+    return np.dstack((R, G, B))
 
-def histogram_equalize(im_orig):          #input: grayscale or RGB with [0,1] values
+def histogram_equalize(im_orig):
+    """
+    this function making histogram equalization on an image
 
-    # some identities
+    Parameters
+    ----------
+    :param im_orig: numpy.array
+        3D pixels matrix of the original image
+
+    Returns
+    -------
+    :return [im_eq, hist_orig, hist_eq]: python list
+        im_eq: numpy.array
+            3D/2D pixels matrix of the histogram equalized image (RGB/GRAYSCALE)
+        hist_orig: numpy.array
+            1D histogram of the original image
+        hist_eq:
+            1D histogram of the equalized image
+
+    """
+
+    # identities
     hieght, width = im_orig.shape[HIEGTH], im_orig.shape[WIDTH]
     n_pixels = hieght*width
     originaly_colorful = False
     im = im_orig
 
-
     # check if picture is rgb or gray
-    if len(im_orig.shape) == 3:
+    if len(im_orig.shape) == COLORFULL:
         originaly_colorful = True
         im_yiq = rgb2yiq(im_orig)
         Y  = im_yiq[:, :, 0]
@@ -108,20 +186,18 @@ def histogram_equalize(im_orig):          #input: grayscale or RGB with [0,1] va
     c_histogram = np.cumsum(histogram)
 
     # normalized cum func
-    sk = ((c_histogram/n_pixels)*SHADES_OF_GRAY)  # transform function
-    sk = sk.round()
+    lut = ((c_histogram/n_pixels)*SHADES_OF_GRAY)  # transform function
+    lut = lut.round()
 
     # check that mim value is 0 and max is K-1 (255)
     # otherwise stretch the result linearly
-    if sk[0] != 0 or sk[255] != 255:
-        m = np.nonzero(sk)[0][0]
-        sk = ((c_histogram - c_histogram[m])/(c_histogram[255]-c_histogram[m]))*255
-        sk = sk.round()
-
+    if lut[0] != 0 or lut[255] != 255:
+        m = np.nonzero(lut)[0][0]
+        lut = ((c_histogram - c_histogram[m])/(c_histogram[SHADES_OF_GRAY]-c_histogram[m]))*SHADES_OF_GRAY
+        lut = lut.round()
 
     # pixels to float
-    im_eq = (sk[(im*255).astype(int)]).astype(np.float64)/255
-
+    im_eq = (lut[(im*255).astype(int)]).astype(np.float64)/255
 
     # histogram of original & new image
     hist_orig, bounds_orig = np.histogram(im_orig*SHADES_OF_GRAY, np.arange(257))
@@ -129,57 +205,71 @@ def histogram_equalize(im_orig):          #input: grayscale or RGB with [0,1] va
 
     if originaly_colorful:
         im_eq = yiq2rgb(np.dstack((im_eq, I, Q)))
-        im_eq.clip(0,1,im_eq)
+        im_eq.clip(0, 1, im_eq)
 
     return [im_eq, hist_orig, hist_eq]
 
 def quantize(im_orig, n_quant, n_iter):
+    """
+    this function quantize the image
 
-    # some identities
+    Parameters
+    ----------
+    :param im_orig: numpy.array
+        3D pixels matrix of the original image
+    :param n_quant: int
+        number of the quantization
+    :param n_iter: int
+        number of iteration of the minError loop
+
+    Returns
+    -------
+    :return [im_quant, error]: python list
+        im_quant: numpy.array
+            3D/2D pixels matrix of the quantize image (RGB/GRAYSCALE)
+        error: numpy.array
+            1D histogram of the errors
+
+    """
+
+    # identities
     hieght, width = im_orig.shape[HIEGTH], im_orig.shape[WIDTH]
     n_pixels = hieght*width
     originaly_colorful = False
     im = im_orig
 
     # check if picture is rgb or gray
-    print(im_orig.shape)
-    if len(im_orig.shape) == 3:
+    if len(im_orig.shape) == COLORFULL:
         originaly_colorful = True
         im_yiq = rgb2yiq(im_orig)
         Y  = im_yiq[:, :, 0]
         I  = im_yiq[:, :, 1]
         Q  = im_yiq[:, :, 2]
-        im = Y
-
-    plt.imshow(im, cmap=plt.cm.gray)  # present
-    plt.show()
+        im = Y.clip(0,1)
 
     # calculate histogram and cumulative function
-    h, bins = np.histogram(im*SHADES_OF_GRAY, bins=np.arange(SHADES_OF_GRAY+2))
-    plt.bar(np.arange(256), h)
+    h, bins = np.histogram((im*SHADES_OF_GRAY).astype(int), bins=np.arange(SHADES_OF_GRAY+2))
 
     # initialized of z and q
-    z = np.linspace(0,255,n_quant+1)
+    z = np.linspace(0, 255, n_quant+1)
     q = np.zeros(n_quant)
     Enew = float('inf')
     error = np.array([])
 
+    # divide the z smartly (by the number of pixels)
     comulative_hist = h.cumsum()
     eachZone = n_pixels/n_quant
     for i in range(n_quant+1):
         if (i != 0 and i != n_quant):
             equal = np.where(comulative_hist >= eachZone*i)
-            print(z[i])
             if (z[i-1] != z[i]):
                 z[i] = equal[0][0]
+            # if it's to tight for a z'th move it
             else:
                 z[i] = equal[0][0]+1
 
-
-    plt.bar(np.arange(256), h)
-    plt.bar(z, np.array([2500] * len(z)), color=['green'])
-    plt.show()
-
+    # find the qs and the zs and the min error
+    # find untill z is stable or n_iter is over
     while(n_iter):
         n_iter -= 1
         min_z = z.copy()
@@ -190,9 +280,6 @@ def quantize(im_orig, n_quant, n_iter):
             Zsection = (np.arange(z[i], z[i + 1]+1)).astype(int)
             q_up = np.sum(np.multiply(Zsection, h[Zsection]))
             q_down = np.sum(h[Zsection])
-
-            if q_down == 0:
-                print(Zsection)
             q[i] = q_up // q_down
 
             if (i==0 or i==n_quant):
@@ -202,138 +289,31 @@ def quantize(im_orig, n_quant, n_iter):
 
         Enew = []
         for i in range(n_quant):
-            for zk in range(int(z[i]),int(z[i+1])+1):
-                Enew.append(pow(q[i]-zk,2)*h[zk])
+            for zk in range(int(z[i]), int(z[i+1])+1):
+                Enew.append(pow(q[i]-zk, 2)*h[zk])
 
         Enew = sum(Enew)
-        error = np.append(error,Enew)
+        error = np.append(error, Enew)
 
         if Eold <= Enew:
             break
 
-
-    plt.bar(np.arange(256), h)
-    plt.bar(min_q.astype(int), np.array([1000]*len(min_q)), color = ['red'])
-    plt.bar(min_z, np.array([2500]*len(min_z)), color = ['green'])
-    plt.show()
-
+    # update the look up table by the q's
     lut = np.zeros(256)
     z = min_z.astype(int)
     q = min_q.astype(int)
     for i in range(n_quant):
         lut[z[i]:z[i+1]] += q[i]
 
+    # update the last one
     lut[255] = q[n_quant-1]
 
-    plt.bar(np.arange(256), lut)
-    plt.show()
-
+    # every pixel is transfer according to the lut
     im_quant = (lut[(im*255).astype(int)]).astype(np.float64)/255
-
-    plt.imshow(im_quant, cmap=plt.cm.gray)  # present
-    plt.show()
-
-    # calculate histogram and cumulative function
-    hist_quant, bins = np.histogram(im_quant*SHADES_OF_GRAY, bins=np.arange(SHADES_OF_GRAY+2))
-    plt.bar(np.arange(256), hist_quant, color = 'red')
-    plt.show()
 
     if originaly_colorful:
         im_quant = yiq2rgb(np.dstack((im_quant, I, Q)))
-        im_quant.clip(0,1,im_quant)
+        im_quant.clip(0, 1, im_quant)
 
     return [im_quant, error]
-
-
-im = imdisplay("C:\\Users\\Liran\\Desktop\\rgb_orig.jpg")
-
-
-###############CHECK QUANTIZE################################
-#
-# image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
-#
-# im, error  = quantize(image,4,1000)
-#
-# plt.plot(error)
-# plt.show()
-# plt.imshow(im)
-# plt.show()
-
-
-# plt.imshow(image)
-# plt.show()
-#
-# plt.imshow(im)
-# plt.show()
-#
-#
-#####################################################
-
-
-
-
-# check HISTOGRAM ###############
-# image = read_image("C:\\Users\\Liran\\Desktop\\Unequalized_Hawkes_Bay_NZ.jpg",RGB)
-#
-# im, hist_orig, hist_eq  = histogram_equalize(image)
-#
-# plt.imshow(image)
-# plt.show()
-#
-# plt.imshow(im)
-# plt.show()
-#
-# plt.bar(np.arange(256), hist_orig)
-# plt.show()
-# plt.bar(np.arange(256), hist_eq)
-# plt.show()
-# plt.bar(np.arange(256), np.cumsum(hist_orig))
-# plt.show()
-# plt.bar(np.arange(256), np.cumsum(hist_eq))
-# plt.show()
-## check HISTOGRAM ###############
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#imcheck = read_image("C:\\Users\\Liran\\Desktop\\lizi.jpg",1)
-
-
-
-#hist, bounds = np.histogram(Y, 128)
-#plt.tick_params(labelsize=20)
-#plt.plot((bounds[:-1] + bounds[1:]) / 2, hist)
-#plt.hist(Y.flatten(), bins=128)
-#plt.show()
-
-
-# plt.tick_params(labelsize=20)
-# plt.plot((bounds_eq[:-1] + bounds_eq[1:]) / 2, hist_eq)
-# plt.hist(im_eq.flatten(), bins=256)
-#
-# plt.plot((bounds_orig[:-1] + bounds_orig[1:]) / 2, hist_orig)
-# plt.hist(im_orig.flatten(), bins=256)
-#
-# plt.show()
 
