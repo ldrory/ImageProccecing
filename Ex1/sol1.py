@@ -169,7 +169,16 @@ def quantize(im_orig, n_quant, n_iter):
     for i in range(n_quant+1):
         if (i != 0 and i != n_quant):
             equal = np.where(comulative_hist >= eachZone*i)
-            z[i] = equal[0][0]
+            print(z[i])
+            if (z[i-1] != z[i]):
+                z[i] = equal[0][0]
+            else:
+                z[i] = equal[0][0]+1
+
+
+    plt.bar(np.arange(256), h)
+    plt.bar(z, np.array([2500] * len(z)), color=['green'])
+    plt.show()
 
     while(n_iter):
         n_iter -= 1
@@ -178,9 +187,12 @@ def quantize(im_orig, n_quant, n_iter):
         Eold = Enew
 
         for i in range(n_quant):
-            Zsection = (np.arange(z[i], z[i + 1])).astype(int)
+            Zsection = (np.arange(z[i], z[i + 1]+1)).astype(int)
             q_up = np.sum(np.multiply(Zsection, h[Zsection]))
             q_down = np.sum(h[Zsection])
+
+            if q_down == 0:
+                print(Zsection)
             q[i] = q_up // q_down
 
             if (i==0 or i==n_quant):
@@ -188,20 +200,21 @@ def quantize(im_orig, n_quant, n_iter):
             else:
                 z[i] = (q[i-1]+q[i])//2
 
-
+        Enew = []
         for i in range(n_quant):
             for zk in range(int(z[i]),int(z[i+1])+1):
-                Enew = pow(q[i]-zk,2)*h[zk]
+                Enew.append(pow(q[i]-zk,2)*h[zk])
+
+        Enew = sum(Enew)
         error = np.append(error,Enew)
 
-        if Eold < Enew:
+        if Eold <= Enew:
             break
-    print(q)
-    q=[78,134,200]
+
+
     plt.bar(np.arange(256), h)
-    plt.bar(min_q.astype(int), h[min_q.astype(int)], color = ['red'])
-   #
-    #  plt.bar(min_z, np.array([2500,2500,2500,2500]), color = ['green'])
+    plt.bar(min_q.astype(int), np.array([1000]*len(min_q)), color = ['red'])
+    plt.bar(min_z, np.array([2500]*len(min_z)), color = ['green'])
     plt.show()
 
     lut = np.zeros(256)
@@ -212,13 +225,9 @@ def quantize(im_orig, n_quant, n_iter):
 
     lut[255] = q[n_quant-1]
 
-    #WTF
-  #  lut = 255 - lut
-
     plt.bar(np.arange(256), lut)
     plt.show()
 
-    print(im)
     im_quant = (lut[(im*255).astype(int)]).astype(np.float64)/255
 
     plt.imshow(im_quant, cmap=plt.cm.gray)  # present
@@ -235,14 +244,16 @@ def quantize(im_orig, n_quant, n_iter):
 
     return [im_quant, error]
 
+###############CHECK QUANTIZE################################
 #
+# image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
 #
-image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
-
-im, error  = quantize(image,3,1000)
-
-plt.imshow(im)
-plt.show()
+# im, error  = quantize(image,4,1000)
+#
+# plt.plot(error)
+# plt.show()
+# plt.imshow(im)
+# plt.show()
 
 
 # plt.imshow(image)
@@ -252,15 +263,13 @@ plt.show()
 # plt.show()
 #
 #
-#
-#
-#
+#####################################################
 
 
 
 
 # check HISTOGRAM ###############
-# image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
+# image = read_image("C:\\Users\\Liran\\Desktop\\Unequalized_Hawkes_Bay_NZ.jpg",RGB)
 #
 # im, hist_orig, hist_eq  = histogram_equalize(image)
 #
