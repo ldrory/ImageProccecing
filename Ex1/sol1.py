@@ -244,6 +244,10 @@ def quantize(im_orig, n_quant, n_iter):
 
     return [im_quant, error]
 
+
+im = imdisplay("C:\\Users\\Liran\\Desktop\\rgb_orig.jpg")
+
+
 ###############CHECK QUANTIZE################################
 #
 # image = read_image("C:\\Users\\Liran\\Desktop\\1.jpg",RGB)
