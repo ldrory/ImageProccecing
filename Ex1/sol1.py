@@ -156,9 +156,8 @@ def quantize(im_orig, n_quant, n_iter):
     # calculate histogram and cumulative function
     h, bins = np.histogram(im*SHADES_OF_GRAY, bins=np.arange(SHADES_OF_GRAY+2))
     plt.bar(np.arange(256), h)
-    plt.show()
 
-    #initialized of z and q
+    # initialized of z and q
     z = np.linspace(0,255,n_quant+1)
     q = np.zeros(n_quant)
     Enew = float('inf')
@@ -169,48 +168,55 @@ def quantize(im_orig, n_quant, n_iter):
     for i in range(n_quant+1):
         if (i != 0 and i != n_quant):
             equal = np.where(comulative_hist >= eachZone*i)
-            z[i]=equal[0][0]
+            z[i] = equal[0][0]
+    print(z)
 
-
-
-    for j in range(n_iter):
+    while(n_iter):
+        n_iter -= 1
         min_z = z.copy()
         min_q = q.copy()
         Eold = Enew
 
         for i in range(n_quant):
-            p = h[(np.arange(z[i], z[i + 1])).astype(int)]
-            q_down = np.sum(p)
-            q_up = np.sum(np.multiply(np.arange(z[i], z[i + 1]),
-                                      h[(np.arange(z[i], z[i + 1])).astype(int)]))
-
-            q[i] = q_up / q_down
+            Zsection = (np.arange(z[i], z[i + 1])).astype(int)
+            q_up = np.sum(np.multiply(Zsection, h[Zsection]))
+            q_down = np.sum(h[Zsection])
+            q[i] = q_up // q_down
 
             if (i==0 or i==n_quant):
                 continue
             else:
-                z[i] = (q[i-1]+q[i])/2
+                z[i] = (q[i-1]+q[i])//2
 
 
         for i in range(n_quant):
-            for zk in range(int(z[i]),int(z[i+1])):
+            for zk in range(int(z[i]),int(z[i+1])+1):
                 Enew = pow(q[i]-zk,2)*h[zk]
-            error = np.append(error,Enew)
-
-        # plt.bar(np.arange(256), h)
-        # plt.bar(q.astype(int), q.astype(int)+102, color = ['red'])
-        # plt.show()
+        error = np.append(error,Enew)
 
         if Eold < Enew:
             break
-
+    print(q)
+    q=[78,134,200]
+    plt.bar(np.arange(256), h)
+    plt.bar(min_q.astype(int), h[min_q.astype(int)], color = ['red'])
+   #
+    #  plt.bar(min_z, np.array([2500,2500,2500,2500]), color = ['green'])
+    plt.show()
 
     lut = np.zeros(256)
-    i = 0
-    min_z = min_z.astype(int)
-    min_q = min_q.astype(int)
+    z = min_z.astype(int)
+    q = min_q.astype(int)
     for i in range(n_quant):
-        np.put(lut,np.arange(min_z[i],min_z[i+1]+1),h[min_q[i]])
+        lut[z[i]:z[i+1]] += q[i]
+
+    lut[255] = q[n_quant-1]
+
+    #WTF
+  #  lut = 255 - lut
+
+    plt.bar(np.arange(256), lut)
+    plt.show()
 
     im_quant = (lut[(im*255).astype(int)]).astype(np.float64)/255
 
@@ -219,7 +225,7 @@ def quantize(im_orig, n_quant, n_iter):
 
     # calculate histogram and cumulative function
     hist_quant, bins = np.histogram(im_quant*SHADES_OF_GRAY, bins=np.arange(SHADES_OF_GRAY+2))
-    plt.bar(np.arange(256), hist_quant)
+    plt.bar(np.arange(256), hist_quant, color = 'red')
     plt.show()
 
     if originaly_colorful:
@@ -230,11 +236,11 @@ def quantize(im_orig, n_quant, n_iter):
 
 #
 #
-image = read_image("C:\\Users\\Liran\\Desktop\\gray_orig.png",GRAYSCAL)
+image = read_image("C:\\Users\\Liran\\Desktop\\rgb_orig.png",RGB)
 
-im, error  = quantize(image,3,150)
+im, error  = quantize(image,3,1000)
 
-plt.plot(error)
+plt.imshow(im)
 plt.show()
 
 
