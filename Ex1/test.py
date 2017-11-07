@@ -17,23 +17,30 @@ from sol1 import *
 
 
 ##################### check HISTOGRAM ###############
-# image = read_image("C:\\Users\\Liran\\Desktop\\Unequalized_Hawkes_Bay_NZ.jpg",RGB)
+# image = read_image("C:\\Users\\Liran\\Desktop\\test.png",RGB)
 #
 # im, hist_orig, hist_eq  = histogram_equalize(image)
 #
-# plt.imshow(image)
+# plt.subplot(121)
+# plt.imshow(image, cmap=plt.cm.gray)
+#
+# plt.subplot(122)
+# plt.imshow(im, cmap=plt.cm.gray)
+#
+# #plt.subplot_tool()
 # plt.show()
 #
-# plt.imshow(im)
-# plt.show()
 #
+# plt.subplot(221)
 # plt.bar(np.arange(256), hist_orig)
-# plt.show()
+#
+# plt.subplot(222)
 # plt.bar(np.arange(256), hist_eq)
-# plt.show()
+#
+# plt.subplot(223)
 # plt.bar(np.arange(256), np.cumsum(hist_orig))
-# plt.show()
+#
+# plt.subplot(224)
 # plt.bar(np.arange(256), np.cumsum(hist_eq))
 # plt.show()
 ## check HISTOGRAM ###############
-
