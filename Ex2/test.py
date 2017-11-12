@@ -1,6 +1,6 @@
 from sol2 import *
 
-#--------- TEST DFT & FFT ----------#
+#--------- TEST DFT & FFT secotion: 1.1----------#
 # print(DFT(np.arange(3)))
 # print(IDFT(np.arange(3)))
 # print("\n\n")
@@ -16,14 +16,14 @@ from sol2 import *
 # print(np.fft.ifft(x))
 ######################################
 
-# --------- 2D FOURIER CHECK --------------
+# --------- 2D FOURIER CHECK secotion: 1.2 --------------
 # x = np.array([[1,2,3],[4,5,6],[7,8,9]])
 #
 # print(IDFT2(x))
 # print("\n")
 # print(np.fft.ifft2(x))
-
-
+#
+#
 # k = np.log(1+np.abs(DFT2(x)))
 #
 # plt.plot(k)
@@ -49,4 +49,10 @@ from sol2 import *
 #
 # plt.plot(IDFT(DFT(y)).real)
 # plt.grid()
+# plt.show()
+
+# ----------------- CONV DER secotion: 2.1 -------------------------------------
+
+# im = conv_der(imread(r"C:\Users\Liran\Desktop\shit\gray_orig.png"))
+# plt.imshow(im, cmap=plt.cm.gray)  # present
 # plt.show()

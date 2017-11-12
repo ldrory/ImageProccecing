@@ -3,7 +3,8 @@ __author__ = "Liran Drory"
 import numpy as np
 import matplotlib.pylab as plt
 from scipy.misc import imread as imread
-from skimage.color import rgb2gray
+from scipy.signal import convolve2d as conv
+
 
 #TODO: #check the complex128 or the float64 demant on DFT & IDFT
 
@@ -59,8 +60,7 @@ def DFT2(image):
     dft2_matrix = np.power(omega_y, u*v)
 
     # calculate the 2D fourier transform
-    DFT_1D = DFT(image)
-    fourier_image = np.dot(dft2_matrix, DFT_1D)
+    fourier_image = np.dot(dft2_matrix, DFT(image))
 
     return fourier_image
 
@@ -74,10 +74,17 @@ def IDFT2(fourier_image):
     idft2_matrix = np.power(omega_y, u*v)
 
     # calculate the 2D inverse fourier transform
-    IDFT_1D = IDFT(fourier_image)
-    image = 1/N * np.dot(idft2_matrix, IDFT_1D)
+    image = 1/N * np.dot(idft2_matrix, IDFT(fourier_image))
 
     return image
 
 
+def conv_der(im):
+    # set der x/y matrix
+    der_x = np.array([[1, 0, -1]])
+    der_y = np.array(der_x.transpose())
+    # calculate the derivative to x and y
+    dx = conv(im, der_x, mode='same')
+    dy = conv(im, der_y, mode='same')
 
+    return np.sqrt(np.abs(dx)**2 + np.abs(dy)**2)  # = magnitude
