@@ -1,29 +1,33 @@
 from sol2 import *
 
 #--------- TEST DFT & FFT secotion: 1.1----------#
-# print(DFT(np.arange(3)))
-# print(IDFT(np.arange(3)))
+# x = np.arange(3)
+# print(DFT(x))
+# print(IDFT(x))
 # print("\n\n")
-# print(np.fft.fft(np.arange(3)))
-# print(np.fft.ifft(np.arange(3)))
+# print(np.fft.fft(x))
+# print(np.fft.ifft(x))
 #
 # check that matrix of signals is working
-# x = np.array([[1,2,3],[4,5,6],[7,8,9]])
+# x = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
 # print(DFT(x))
 # print(np.fft.fft(x))
-#
+
 # print(IDFT(x))
 # print(np.fft.ifft(x))
 ######################################
 
 # --------- 2D FOURIER CHECK secotion: 1.2 --------------
-# x = np.array([[1,2,3],[4,5,6],[7,8,9]])
+# x = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
 #
 # print(IDFT2(x))
-# print("\n")
 # print(np.fft.ifft2(x))
+# print("\n")
+# print(np.fft.ifft2(np.fft.fft2(x)))
+# print(IDFT2(DFT2(x)))
+
 #
-#
+# #
 # k = np.log(1+np.abs(DFT2(x)))
 #
 # plt.plot(k)
@@ -54,5 +58,12 @@ from sol2 import *
 # ----------------- CONV DER secotion: 2.1 -------------------------------------
 
 # im = conv_der(imread(r"C:\Users\Liran\Desktop\shit\gray_orig.png"))
+# print(im)
+# plt.imshow(im, cmap=plt.cm.gray)  # present
+# plt.show()
+
+# ----------------- FOURIER DER secotion: 2.2 -------------------------------------
+#
+# im = fourier_der(imread(r"C:\Users\Liran\Desktop\shit\gray_orig.png"))
 # plt.imshow(im, cmap=plt.cm.gray)  # present
 # plt.show()
