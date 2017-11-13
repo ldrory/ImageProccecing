@@ -23,7 +23,6 @@ def DFT(signal):
     # if it is a matrix of signals
     if signal.ndim == 2:
         # calculate the Fourier Transform
-        print(dft_matrix.shape, signal.transpose().shape)
         complex_fourier_signal = np.dot(dft_matrix, signal.transpose())
         return complex_fourier_signal.transpose()
 
@@ -77,7 +76,7 @@ def IDFT2(fourier_image):
     idft2_matrix = np.power(omega_y, u*v)
 
     # calculate the 2D inverse fourier transform
-    return 1/(N*M) * np.dot(idft2_matrix, IDFT(fourier_image))
+    return 1/M * np.dot(idft2_matrix, IDFT(fourier_image))
 
 
 def conv_der(im):
@@ -94,11 +93,11 @@ def conv_der(im):
 def fourier_der(im):
     # constants
     M, N = im.shape
-    u, v = np.meshgrid(np.arange(N), np.arange(N))[0], np.meshgrid(np.arange(M), np.arange(M))[1]
+    u, v = np.meshgrid(np.arange(N), np.arange(M))[0], np.meshgrid(np.arange(N), np.arange(M))[1]
     u_der, v_der = (2 * np.pi * 1j / N), (2 * np.pi * 1j / M)
 
     # calculate dx, dy
-    dx = IDFT2(u_der * u * DFT2(im))
-    dy = IDFT2(v_der * v * DFT2(im))
+    dx = IDFT2(np.fft.fftshift(u_der * u * DFT2(im)))
+    dy = IDFT2(np.fft.fftshift(v_der * v * DFT2(im)))
 
     return np.sqrt(np.abs(dx)**2 + np.abs(dy)**2)  # = magnitude
