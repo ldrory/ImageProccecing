@@ -57,28 +57,30 @@ from sol2 import *
 
 # ----------------- CONV DER secotion: 2.1 -------------------------------------
 #
-# im = conv_der(imread(r"grayscale.png", mode='L'))
-# plt.imshow(im, cmap=plt.cm.gray)  # present
-# plt.show()
+im = conv_der(imread(r"grayscale.png", mode='L'))
+plt.imshow(im, cmap=plt.cm.gray)  # present
+plt.show()
 
 # ----------------- FOURIER DER secotion: 2.2 -------------------------------------
 #
-# im = fourier_der(imread(r"grayscale.png", mode='L'))
-# # im = fourier_der(np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]]))
-# plt.imshow(im, cmap=plt.cm.gray)  # present
-# plt.show()
+im = fourier_der(imread(r"grayscale.png", mode='L'))
+# im = fourier_der(np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]]))
+plt.imshow(im, cmap=plt.cm.gray)  # present
+plt.show()
 
 
 # ----------------- BLURRING IMAGE secotion: 3.1 -------------------------------------
-
-print(gaussian_kernel_factory(7))
 #
-im = blur_spatial(imread(r"grayscale.png", mode='L'), 51)
-plt.imshow(im, cmap=plt.cm.gray)  # present
-plt.show()
+# print(gaussian_kernel_factory(7))
+# #
+# im = blur_spatial(imread(r"grayscale.png", mode='L'), 51)
+# plt.imshow(im, cmap=plt.cm.gray)  # present
+# plt.show()
+#
+# ----------------- BLURRING IMAGE  FOURIER secotion: 3.2 -------------------------------------
 
-im = blur_fourier(imread(r"grayscale.png", mode='L'), 51)
-plt.imshow(im, cmap=plt.cm.gray)  # present
-plt.show()
-
+# im = blur_fourier(imread(r"grayscale.png", mode='L'), 51)
+# plt.imshow(im, cmap=plt.cm.gray)  # present
+# plt.show()
+#
 

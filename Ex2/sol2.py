@@ -69,6 +69,7 @@ def DFT2(image):
 
 
 def IDFT2(fourier_image):
+
     M, N = fourier_image.shape
     # build the idft2_matrix transform
     omega_y = np.exp(2 * np.pi * 1j / M)
@@ -80,6 +81,7 @@ def IDFT2(fourier_image):
 
 
 def conv_der(im):
+
     # set der x/y matrix
     der_x = np.array([[1, 0, -1]])
     der_y = np.array(der_x.transpose())
@@ -90,18 +92,17 @@ def conv_der(im):
     return np.sqrt(np.abs(dx)**2 + np.abs(dy)**2)  # = magnitude
 
 
-#TODO: #fix fourier_der func
 def fourier_der(im):
+
     # constants
     M, N = im.shape
-    u, v = np.meshgrid(np.arange(N), np.arange(M))[0], np.meshgrid(np.arange(N), np.arange(M))[1]
+    u = np.meshgrid(np.arange(N), np.arange(M))[0] - N//2
+    v = np.meshgrid(np.arange(N), np.arange(M))[1] - M//2
     u_der, v_der = (2 * np.pi * 1j / N), (2 * np.pi * 1j / M)
 
     # calculate dx, dy
-    dft_shifted = np.fft.fftshift(DFT2(im))
-
-    dx = u_der * IDFT2(np.fft.ifftshift(np.fft.fftshift(u) * dft_shifted))
-    dy = v_der * IDFT2(np.fft.ifftshift(np.fft.fftshift(v) * dft_shifted))
+    dx = u_der * IDFT2(np.fft.fftshift(u) * DFT2(im))
+    dy = v_der * IDFT2(np.fft.fftshift(v) * DFT2(im))
 
     return np.sqrt(np.abs(dx)**2 + np.abs(dy)**2)  # = magnitude
 
