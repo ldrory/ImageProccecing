@@ -90,6 +90,7 @@ def conv_der(im):
     return np.sqrt(np.abs(dx)**2 + np.abs(dy)**2)  # = magnitude
 
 
+#TODO: #fix fourier_der func
 def fourier_der(im):
     # constants
     M, N = im.shape
@@ -103,3 +104,34 @@ def fourier_der(im):
     dy = v_der * IDFT2(np.fft.ifftshift(np.fft.fftshift(v) * dft_shifted))
 
     return np.sqrt(np.abs(dx)**2 + np.abs(dy)**2)  # = magnitude
+
+
+def gaussian_kernel_factory(kernel_size):
+
+    gaussian = binomial_ker = np.array([[1, 1]])
+    while gaussian.shape[1] < kernel_size: gaussian = conv(gaussian, binomial_ker)
+    gaussian_kernel = np.ones((kernel_size, kernel_size)) * gaussian * gaussian.transpose()
+
+    return 1 / gaussian_kernel.sum() * gaussian_kernel
+
+
+def blur_spatial(im, kernel_size):
+    # im_padding = np.pad(im, kernel_size, mode='edge')
+    return conv(im, gaussian_kernel_factory(kernel_size))
+
+
+def blur_fourier(im, kernel_size):
+    dft = DFT2(im)
+    gaus = gaussian_kernel_factory(kernel_size)
+    p = np.zeros_like(im)
+
+    nb = im.shape[0]
+    na = gaus.shape[0]
+    lower = (nb) // 2 - (na // 2)
+    upper = (nb // 2) + (na // 2)
+    p[lower:upper, lower:upper] = gaus
+
+    dft_gau = DFT2(np.fft.ifftshift(p))
+    blur_fourier2 = IDFT2(dft * dft_gau)
+
+    return blur_fourier2
