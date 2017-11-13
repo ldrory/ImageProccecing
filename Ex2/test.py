@@ -57,13 +57,13 @@ from sol2 import *
 
 # ----------------- CONV DER secotion: 2.1 -------------------------------------
 
-im = conv_der(imread(r"C:\Users\Liran\Desktop\shit\gray_orig.png"))
+im = conv_der(imread(r"gray_orig.png"))
 plt.imshow(im, cmap=plt.cm.gray)  # present
 plt.show()
 
 # ----------------- FOURIER DER secotion: 2.2 -------------------------------------
 #
-im = fourier_der(imread(r"C:\Users\Liran\Desktop\shit\gray_orig.png"))
+im = fourier_der(imread(r"gray_orig.png"))
 # im = fourier_der(np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]]))
 plt.imshow(im, cmap=plt.cm.gray)  # present
 plt.show()

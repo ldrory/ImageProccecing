@@ -97,7 +97,11 @@ def fourier_der(im):
     u_der, v_der = (2 * np.pi * 1j / N), (2 * np.pi * 1j / M)
 
     # calculate dx, dy
-    dx = IDFT2(np.fft.fftshift(u_der * u * DFT2(im)))
-    dy = IDFT2(np.fft.fftshift(v_der * v * DFT2(im)))
+    dft_shifted = np.fft.fftshift(DFT2(im))
+    u_shifted = np.fft.fftshift(u)
+    v_shifted = np.fft.fftshift(v)
+
+    dx = u_der * IDFT2(np.fft.ifftshift(u_shifted * dft_shifted))
+    dy = v_der * IDFT2(np.fft.ifftshift(v_shifted * dft_shifted))
 
     return np.sqrt(np.abs(dx)**2 + np.abs(dy)**2)  # = magnitude
