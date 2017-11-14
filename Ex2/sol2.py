@@ -118,7 +118,7 @@ def gaussian_kernel_factory(kernel_size):
 
 def blur_spatial(im, kernel_size):
     # im_padding = np.pad(im, kernel_size, mode='edge')
-    return conv(im, gaussian_kernel_factory(kernel_size))
+    return conv(im, gaussian_kernel_factory(kernel_size), mode='same')
 
 
 def blur_fourier(im, kernel_size):
