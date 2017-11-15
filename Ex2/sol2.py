@@ -6,6 +6,8 @@ import matplotlib.pylab as plt
 from scipy.misc import imread as imread
 
 #TODO: #check the complex128 or the float64 demant on DFT & IDFT
+#TODO: #check when to return real or real if close
+
 
 
 def DFT(signal):
@@ -122,17 +124,15 @@ def blur_spatial(im, kernel_size):
 
 
 def blur_fourier(im, kernel_size):
-    dft = DFT2(im)
-    gaus = gaussian_kernel_factory(kernel_size)
-    p = np.zeros_like(im)
 
-    nb = im.shape[0]
-    na = gaus.shape[0]
-    lower = (nb) // 2 - (na // 2)
-    upper = (nb // 2) + (na // 2)
-    p[lower:upper, lower:upper] = gaus
+    # build the kernel with zero padding
+    kernel_base = gaussian_kernel_factory(kernel_size)
+    window = np.zeros_like(im).astype(np.float64)
+    M, N = im.shape
+    dx, dy = kernel_base.shape
+    x_middle, y_middle = N//2, M//2
 
-    dft_gau = DFT2(np.fft.ifftshift(p))
-    blur_fourier2 = IDFT2(dft * dft_gau)
+    window[(y_middle-dy//2):(y_middle+dy//2+1), (x_middle-dx//2):(x_middle+dx//2+1)] = kernel_base
 
-    return blur_fourier2
+    # multiply in the freq domain
+    return IDFT2(DFT2(im) * DFT2(np.fft.ifftshift(window))).real

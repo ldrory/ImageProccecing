@@ -8,11 +8,11 @@ from sol2 import *
 # print(np.fft.fft(x))
 # print(np.fft.ifft(x))
 #
-# check that matrix of signals is working
+# # check that matrix of signals is working
 # x = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
 # print(DFT(x))
 # print(np.fft.fft(x))
-
+#
 # print(IDFT(x))
 # print(np.fft.ifft(x))
 ######################################
@@ -25,7 +25,7 @@ from sol2 import *
 # print("\n")
 # print(np.fft.ifft2(np.fft.fft2(x)))
 # print(IDFT2(DFT2(x)))
-
+#
 #
 # #
 # k = np.log(1+np.abs(DFT2(x)))
@@ -57,17 +57,17 @@ from sol2 import *
 
 # ----------------- CONV DER secotion: 2.1 -------------------------------------
 #
-im = conv_der(imread(r"lucky.png", mode='L'))
-plt.figure()
-plt.imshow(im, cmap=plt.cm.gray)  # present
+# im = conv_der(imread(r"lucky.png", mode='L'))
+# plt.figure()
+# plt.imshow(im, cmap=plt.cm.gray)  # present
 
 # ----------------- FOURIER DER secotion: 2.2 -------------------------------------
 # #
-im = fourier_der(imread(r"lucky.png", mode='L'))
-# im = fourier_der(np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]]))
-plt.figure()
-plt.imshow(im, cmap=plt.cm.gray)  # present
-plt.show()
+# im = fourier_der(imread(r"lucky.png", mode='L'))
+# # im = fourier_der(np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]]))
+# plt.figure()
+# plt.imshow(im, cmap=plt.cm.gray)  # present
+# plt.show()
 
 
 # ----------------- BLURRING IMAGE secotion: 3.1 -------------------------------------
@@ -79,9 +79,9 @@ plt.show()
 # plt.show()
 
 # ----------------- BLURRING IMAGE  FOURIER secotion: 3.2 -------------------------------------
-
-# im = blur_fourier(imread(r"grayscale.png", mode='L'), 51)
+#
+# im = blur_fourier(imread(r"grayscale.png", mode='L'), 25)
 # plt.imshow(im, cmap=plt.cm.gray)  # present
 # plt.show()
 #
-
+#
