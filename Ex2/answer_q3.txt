@@ -1,0 +1,2 @@
+the difference between both of the blurring is the boundry conditions due to
+fourier cyclic colculation (but it is very small)

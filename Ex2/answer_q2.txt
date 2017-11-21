@@ -1,0 +1,4 @@
+when the gaussian not in the center the results of the blur image according to the boundry of fourier
+will translate cyclic way, so that the image center will be where the center of the gaussian where.
+
+because the gaussian is not in the center each pixel will be calculated from different region

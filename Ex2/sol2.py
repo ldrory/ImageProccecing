@@ -4,13 +4,68 @@ import numpy as np
 from scipy.signal import convolve2d as conv
 import matplotlib.pylab as plt
 from scipy.misc import imread as imread
+from skimage.color import rgb2gray
 
-#TODO: #check the complex128 or the float64 demant on DFT & IDFT
-#TODO: #check when to return real or real if close
+GRAYSCAL = 1
+GRAYSCAL_MATRIX = 2
+RGB = 2
+RGB_MATRIX = 3
+HIEGTH = 0
+WIDTH = 1
+SHADES_OF_GRAY = 255
+COLORFULL = 3
 
+
+def read_image(filename, representation):
+    """
+    Read Image and return matrix [0,1] float64
+    Gray scale - 2D
+    RGB - 3D
+
+    Parameters
+    ----------
+    :param filename: str
+        string containing the image filename to read (PATH)
+
+    :param representation: int
+        either 1 or 2 defining whether the output
+        should be a greyscale image (1) or an RGB image (2).
+
+    Returns
+    -------
+    :return numpy array with either 2D matrix or 3D matrix
+            describing the pixels of the image
+
+    """
+
+    # loads the image
+    im = imread(filename)
+
+    if representation == RGB:
+        im_float = im.astype(np.float64)    # pixels to float
+        im_float /= 255                     # pixels [0,1]
+        return im_float
+
+    if representation == GRAYSCAL:
+        im_g = im.astype(np.float64)       # pixels to float
+        im_g = rgb2gray(im_g)                 # turn to grey
+        return im_g
 
 
 def DFT(signal):
+    """
+    Function that return DFT of signal
+    if matrix is input: return every row DFT
+
+    Parameters
+    ----------
+    :param signal
+
+    Returns
+    -------
+    :return complex_fourier_signal
+
+    """
 
     # find the length of the signal
     N = signal.shape[0]
@@ -34,6 +89,19 @@ def DFT(signal):
 
 
 def IDFT(fourier_signal):
+    """
+    Function that return IDFT of fourier signal
+    if matrix is input: return every row IDFT
+
+    Parameters
+    ----------
+    :param fourier_signal
+
+    Returns
+    -------
+    :return 1/N * signal
+
+    """
 
     # find the length of the signal
     N = fourier_signal.shape[0]
@@ -57,6 +125,19 @@ def IDFT(fourier_signal):
 
 
 def DFT2(image):
+    """
+    Function that return 2D DFT of image
+
+    Parameters
+    ----------
+    :param image (matrix)
+
+    Returns
+    -------
+    :return fourier_image
+
+    """
+
     M, N = image.shape
 
     # build the dft2_matrix transform
@@ -71,6 +152,18 @@ def DFT2(image):
 
 
 def IDFT2(fourier_image):
+    """
+    Function that return 2D IDFT of an image
+
+    Parameters
+    ----------
+    :param fourier_image
+
+    Returns
+    -------
+    :return image
+
+    """
 
     M, N = fourier_image.shape
     # build the idft2_matrix transform
@@ -83,6 +176,18 @@ def IDFT2(fourier_image):
 
 
 def conv_der(im):
+    """
+    derivative of an image using convolution
+
+    Parameters
+    ----------
+    :param im
+
+    Returns
+    -------
+    :return magnitude of the derivative
+
+    """
 
     # set der x/y matrix
     der_x = np.array([[1, 0, -1]])
@@ -95,6 +200,18 @@ def conv_der(im):
 
 
 def fourier_der(im):
+    """
+    derivative of an image using fourier transform
+
+    Parameters
+    ----------
+    :param im
+
+    Returns
+    -------
+    :return magnitude of the derivative
+
+    """
 
     # constants
     M, N = im.shape
@@ -110,6 +227,18 @@ def fourier_der(im):
 
 
 def gaussian_kernel_factory(kernel_size):
+    """
+    create gaussian matrix
+
+    Parameters
+    ----------
+    :param kernel_size
+
+    Returns
+    -------
+    :return gaussian matrix
+
+    """
 
     gaussian = binomial_ker = np.array([[1, 1]])
     while gaussian.shape[1] < kernel_size: gaussian = conv(gaussian, binomial_ker)
@@ -119,11 +248,40 @@ def gaussian_kernel_factory(kernel_size):
 
 
 def blur_spatial(im, kernel_size):
-    # im_padding = np.pad(im, kernel_size, mode='edge')
+    """
+    blur image using gaussian convolution
+
+    Parameters
+    ----------
+    :param im
+
+    :param kernel_size
+
+    Returns
+    -------
+    :return blur image
+
+    """
     return conv(im, gaussian_kernel_factory(kernel_size), mode='same')
 
 
 def blur_fourier(im, kernel_size):
+    """
+    blur image with DFT multiply
+
+    Fourier of im & Fourier of gaussian
+    and multiply wisely
+
+    Parameters
+    ----------
+    :param im
+    :param kernel_size
+
+    Returns
+    -------
+    :return blur image
+
+    """
 
     # build the kernel with zero padding
     kernel_base = gaussian_kernel_factory(kernel_size)

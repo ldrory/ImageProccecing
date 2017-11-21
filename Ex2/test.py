@@ -3,9 +3,9 @@ from sol2 import *
 #--------- TEST DFT & FFT secotion: 1.1----------#
 # x = np.arange(3)
 # print(DFT(x))
-# print(IDFT(x))
-# print("\n\n")
 # print(np.fft.fft(x))
+#
+# print(IDFT(x))
 # print(np.fft.ifft(x))
 #
 # # check that matrix of signals is working
@@ -18,8 +18,11 @@ from sol2 import *
 ######################################
 
 # --------- 2D FOURIER CHECK secotion: 1.2 --------------
-# x = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
-#
+# x = np.array([[-1,0,1],[-2,0,2],[-1,0,1]])
+# x = DFT2(x)
+# plt.imshow(x.real)  # present
+# plt.show()
+# #
 # print(IDFT2(x))
 # print(np.fft.ifft2(x))
 # print("\n")
@@ -56,19 +59,20 @@ from sol2 import *
 # plt.show()
 
 # ----------------- CONV DER secotion: 2.1 -------------------------------------
-#
-# im = conv_der(imread(r"lucky.png", mode='L'))
-# plt.figure()
-# plt.imshow(im, cmap=plt.cm.gray)  # present
 
-# ----------------- FOURIER DER secotion: 2.2 -------------------------------------
-# #
-# im = fourier_der(imread(r"lucky.png", mode='L'))
-# # im = fourier_der(np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]]))
+# im = conv_der(imread(r"grayscale.png", mode='L'))
 # plt.figure()
 # plt.imshow(im, cmap=plt.cm.gray)  # present
 # plt.show()
 
+# ----------------- FOURIER DER secotion: 2.2 -------------------------------------
+# #
+# im = fourier_der(imread(r"grayscale.png", mode='L'))
+# # im = fourier_der(np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]]))
+# plt.figure()
+# plt.imshow(im, cmap=plt.cm.gray)  # present
+# plt.show()
+#
 
 # ----------------- BLURRING IMAGE secotion: 3.1 -------------------------------------
 #

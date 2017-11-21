@@ -1,0 +1,6 @@
+The difference of the magnitude happens according to the boundaries of the image
+
+In the Fourier is cyclic
+
+In the Convolution is not affected by the boundaries
+just the frame (outter)
