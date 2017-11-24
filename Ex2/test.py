@@ -1,39 +1,39 @@
 # from sol2 import *
 #
 # #--------- TEST DFT & FFT secotion: 1.1----------#
-# # x = np.arange(3)
-# # print(DFT(x))
-# # print(np.fft.fft(x))
-# #
-# # print(IDFT(x))
-# # print(np.fft.ifft(x))
-# #
-# # # check that matrix of signals is working
-# # x = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
-# # print(DFT(x))
-# # print(np.fft.fft(x))
-# #
-# # print(IDFT(x))
-# # print(np.fft.ifft(x))
+# x = np.arange(3)
+# print(DFT(x))
+# print(np.fft.fft(x))
+#
+# print(IDFT(x))
+# print(np.fft.ifft(x))
+#
+# # check that matrix of signals is working
+# x = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+# print(DFT(x))
+# print(np.fft.fft(x))
+#
+# print(IDFT(x))
+# print(np.fft.ifft(x))
 # ######################################
 #
 # # --------- 2D FOURIER CHECK secotion: 1.2 --------------
-# # x = np.array([[-1,0,1],[-2,0,2],[-1,0,1]])
-# # DFT2(x)
+# x = np.array([[-1,0,1],[-2,0,2],[-1,0,1]])
+# DFT2(x)
+#
 # #
-# # #
-# # print(IDFT2(x))
-# # print(np.fft.ifft2(x))
-# # print("\n")
-# # print(np.fft.ifft2(np.fft.fft2(x)))
-# # print(IDFT2(DFT2(x)))
+# print(IDFT2(x))
+# print(np.fft.ifft2(x))
+# print("\n")
+# print(np.fft.ifft2(np.fft.fft2(x)))
+# print(IDFT2(DFT2(x)))
+#
+#
 # #
-# #
-# # #
-# # k = np.log(1+np.abs(DFT2(x)))
-# #
-# # plt.plot(k)
-# # plt.show()
+# k = np.log(1+np.abs(DFT2(x)))
+#
+# plt.plot(k)
+# plt.show()
 #
 # # ----------------- FOURIER PLOT -------------------------------------
 # # # Number of sample points

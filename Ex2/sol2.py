@@ -66,7 +66,7 @@ def DFT(signal):
     :return complex_fourier_signal
 
     """
-
+    signal = signal.astype(np.float64)
     # find the length of the signal
     N = signal.shape[0]
     if signal.ndim == 2:
@@ -102,7 +102,7 @@ def IDFT(fourier_signal):
     :return 1/N * signal
 
     """
-
+    fourier_signal = fourier_signal.astype(np.complex128)
     # find the length of the signal
     N = fourier_signal.shape[0]
     if fourier_signal.ndim == 2:
@@ -137,7 +137,7 @@ def DFT2(image):
     :return fourier_image
 
     """
-
+    image = image.astype(np.float64)
     M, N = image.shape
 
     # build the dft2_matrix transform
@@ -164,7 +164,7 @@ def IDFT2(fourier_image):
     :return image
 
     """
-
+    fourier_image = fourier_image.astype(np.complex128)
     M, N = fourier_image.shape
     # build the idft2_matrix transform
     omega_y = np.exp(2 * np.pi * 1j / M)
@@ -188,7 +188,7 @@ def conv_der(im):
     :return magnitude of the derivative
 
     """
-    im = im.astype(np.float32)
+    im = im.astype(np.float64)
     # set der x/y matrix
     der_x = np.array([[1, 0, -1]])
     der_y = np.array(der_x.transpose())
@@ -212,7 +212,7 @@ def fourier_der(im):
     :return magnitude of the derivative
 
     """
-    im = im.astype(np.float32)
+    im = im.astype(np.float64)
     # constants
     M, N = im.shape
     u = np.meshgrid(np.arange(N), np.arange(M))[0] - N//2
@@ -262,7 +262,7 @@ def blur_spatial(im, kernel_size):
     :return blur image
 
     """
-    im = im.astype(np.float32)
+    im = im.astype(np.float64)
     return conv(im, gaussian_kernel_factory(kernel_size), mode='same')
 
 
@@ -283,10 +283,10 @@ def blur_fourier(im, kernel_size):
     :return blur image
 
     """
-    im = im.astype(np.float32)
+    im = im.astype(np.float64)
     # build the kernel with zero padding
     kernel_base = gaussian_kernel_factory(kernel_size)
-    window = np.zeros_like(im).astype(np.float32)
+    window = np.zeros_like(im).astype(np.float64)
     M, N = im.shape
     dx, dy = kernel_base.shape
     x_middle, y_middle = N//2, M//2
