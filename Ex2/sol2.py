@@ -188,7 +188,7 @@ def conv_der(im):
     :return magnitude of the derivative
 
     """
-
+    im = im.astype(np.float32)
     # set der x/y matrix
     der_x = np.array([[1, 0, -1]])
     der_y = np.array(der_x.transpose())
@@ -212,7 +212,7 @@ def fourier_der(im):
     :return magnitude of the derivative
 
     """
-
+    im = im.astype(np.float32)
     # constants
     M, N = im.shape
     u = np.meshgrid(np.arange(N), np.arange(M))[0] - N//2
@@ -262,6 +262,7 @@ def blur_spatial(im, kernel_size):
     :return blur image
 
     """
+    im = im.astype(np.float32)
     return conv(im, gaussian_kernel_factory(kernel_size), mode='same')
 
 
@@ -282,10 +283,10 @@ def blur_fourier(im, kernel_size):
     :return blur image
 
     """
-
+    im = im.astype(np.float32)
     # build the kernel with zero padding
     kernel_base = gaussian_kernel_factory(kernel_size)
-    window = np.zeros_like(im).astype(np.float64)
+    window = np.zeros_like(im).astype(np.float32)
     M, N = im.shape
     dx, dy = kernel_base.shape
     x_middle, y_middle = N//2, M//2
