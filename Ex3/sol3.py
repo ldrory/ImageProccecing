@@ -15,8 +15,10 @@ RGB_MATRIX = 3
 WIDTH = 1
 SHADES_OF_GRAY = 255
 
+
 def relpath(filename):
     return os.path.join(os.path.dirname(__file__), filename)
+
 
 def read_image(filename, representation):
     """
@@ -42,16 +44,14 @@ def read_image(filename, representation):
 
     # loads the image
     im = imread(filename)
+    im = im.astype(np.float64)
+    im /= SHADES_OF_GRAY
 
     if representation == RGB:
-        im_float = im.astype(np.float64)    # pixels to float
-        im_float /= SHADES_OF_GRAY          # pixels [0,1]
-        return im_float
+        return im
 
     if representation == GRAYSCAL:
-        im_g = im.astype(np.float64)       # pixels to float
-        im_g = rgb2gray(im_g)                 # turn to grey
-        return im_g
+        return rgb2gray(im)   # turn to grey
 
 
 def gaussian_kernel(kernel_size):
@@ -177,16 +177,42 @@ def pyramid_blending(im1, im2, mask, mask_levels, filter_size_im, filter_size_ma
     for i in range(mask_levels):
         lpyr_blend.append(gpyr_m[i]*lpyr1[i]+(1-gpyr_m[i])*lpyr2[i])
 
-    return (laplacian_to_image(lpyr_blend,filter_vec, [1 for i in range(len(lpyr_blend))])/255).clip(0,1)
+    return laplacian_to_image(lpyr_blend, filter_vec, [1]*len(lpyr_blend)).clip(0,1)
 
 
 def blending_example1():
-    im1 = read_image(relpath('mask/im1.jpg'))
-    im2 = read_image(relpath('mask/im2.jpg'))
-    mask = read_image(relpath('mask/mask.jpg'))
 
-    R = pyramid_blending(im1[::0], im2[::0], mask, mask_levels, filter_size_im, filter_size_mask)
-    G = pyramid_blending(im1[::1], im2[::1], mask, mask_levels, filter_size_im, filter_size_mask)
-    B = pyramid_blending(im1[::2], im2[::2], mask, mask_levels, filter_size_im, filter_size_mask)
+    # load files
+    im1 = read_image(relpath('example1\\im1.jpg'), 2)
+    im2 = read_image(relpath('example1\\im2.jpg'), 2)
+    mask = read_image(relpath('example1\\mask.jpg'), 1)
+    mask = mask.astype(np.bool)
 
-    return [im1, im2, mask, np.dstack((R,G,B))]
+    # initialized parameters
+    mask_levels, filter_size_im, filter_size_mask = [7, 11, 11]
+
+    # blend images @ red, green, blue
+    r = pyramid_blending(im1[:, :, 0], im2[:, :, 0], mask, mask_levels, filter_size_im, filter_size_mask)
+    g = pyramid_blending(im1[:, :, 1], im2[:, :, 1], mask, mask_levels, filter_size_im, filter_size_mask)
+    b = pyramid_blending(im1[:, :, 2], im2[:, :, 2], mask, mask_levels, filter_size_im, filter_size_mask)
+
+    return [im1, im2, mask, np.dstack((r, g, b))]
+
+
+def blending_example2():
+
+    # load files
+    im1 = read_image(relpath('example2\\im1.jpg'), 2)
+    im2 = read_image(relpath('example2\\im2.jpg'), 2)
+    mask = read_image(relpath('example2\\mask.jpg'), 1)
+    mask = mask.astype(np.bool)
+
+    # initialized parameters
+    mask_levels, filter_size_im, filter_size_mask = [100, 15, 11]
+
+    # blend images @ red, green, blue
+    r = pyramid_blending(im1[:, :, 0], im2[:, :, 0], mask, mask_levels, filter_size_im, filter_size_mask)
+    g = pyramid_blending(im1[:, :, 1], im2[:, :, 1], mask, mask_levels, filter_size_im, filter_size_mask)
+    b = pyramid_blending(im1[:, :, 2], im2[:, :, 2], mask, mask_levels, filter_size_im, filter_size_mask)
+
+    return [im1, im2, mask, np.dstack((r, g, b))]

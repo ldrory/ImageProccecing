@@ -10,6 +10,7 @@ from sol3 import *
 
 ### ------ BUILD GAUSSIAN PYRAMID ------- ###
 # im = read_image(r'gray_orig.png' ,1)
+# print(im)
 # pyr, filter_vec = build_gaussian_pyramid(im, 3, 3)
 #
 # print(len(pyr))
@@ -70,17 +71,29 @@ from sol3 import *
 
 ### -------------- PYRAMID BLEND ----------------####
 
-im1 = read_image(r'C:\Users\Liran\Documents\GitHub\ImageProccecing\Ex3\mask\im1.png', 1)
-im2 = read_image(r'C:\Users\Liran\Documents\GitHub\ImageProccecing\Ex3\mask\im2.png', 1)
-mask = read_image(r'C:\Users\Liran\Documents\GitHub\ImageProccecing\Ex3\mask\mask.png', 1)
-mask_levels = 5
-filter_size_im = 3
-filter_size_mask = 3
-mask = mask.astype(np.bool)
-plt.imshow(mask, cmap=plt.cm.gray)
+# im1 = read_image(r'C:\Users\Liran\Documents\GitHub\ImageProccecing\Ex3\mask\im1.png', 1)
+# im2 = read_image(r'C:\Users\Liran\Documents\GitHub\ImageProccecing\Ex3\mask\im2.png', 1)
+# mask = read_image(r'C:\Users\Liran\Documents\GitHub\ImageProccecing\Ex3\mask\mask.png', 1)
+# mask_levels = 5
+# filter_size_im = 3
+# filter_size_mask = 3
+# mask = mask.astype(np.bool)
+# plt.imshow(mask, cmap=plt.cm.gray)
+# plt.show()
+#
+# blended = pyramid_blending(im1, im2, mask, mask_levels, filter_size_im, filter_size_mask)
+# print(blended.dtype)
+# plt.imshow(blended, cmap=plt.cm.gray)
+# plt.show()
+########################################################
+#
+
+#
+im1, im2, mask, blended = blending_example1()
+plt.imshow(blended)
 plt.show()
 
-blended = pyramid_blending(im1, im2, mask, mask_levels, filter_size_im, filter_size_mask)
-print(blended.dtype)
-plt.imshow(blended, cmap=plt.cm.gray)
+im1, im2, mask, blended = blending_example2()
+plt.imshow(blended)
 plt.show()
+
