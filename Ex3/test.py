@@ -57,7 +57,7 @@ from sol3 import *
 ################################################
 
 ### ------------- render_pyramid --------------###
-
+#
 # im = read_image(r'gray_orig.png', 1)
 # pyr, filter_vec = build_gaussian_pyramid(im, 4, 3)
 # display_pyramid(pyr,4)
@@ -88,12 +88,20 @@ from sol3 import *
 ########################################################
 #
 
-#
+
 im1, im2, mask, blended = blending_example1()
+plt.imshow(im1)
+plt.show()
+plt.imshow(im2)
+plt.show()
 plt.imshow(blended)
 plt.show()
 
 im1, im2, mask, blended = blending_example2()
+plt.imshow(im1)
+plt.show()
+plt.imshow(im2)
+plt.show()
 plt.imshow(blended)
 plt.show()
 

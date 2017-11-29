@@ -159,6 +159,7 @@ def display_pyramid(pyr, levels):
 
         black_box[:height, offset:width+offset] = pyr[i]
 
+    plt.figure()
     plt.imshow(black_box, cmap=plt.cm.gray)
     plt.show()
 
@@ -189,7 +190,7 @@ def blending_example1():
     mask = mask.astype(np.bool)
 
     # initialized parameters
-    mask_levels, filter_size_im, filter_size_mask = [7, 11, 11]
+    mask_levels, filter_size_im, filter_size_mask = [250, 5, 5]
 
     # blend images @ red, green, blue
     r = pyramid_blending(im1[:, :, 0], im2[:, :, 0], mask, mask_levels, filter_size_im, filter_size_mask)
