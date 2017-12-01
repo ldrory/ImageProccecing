@@ -97,6 +97,7 @@ plt.show()
 plt.imshow(blended)
 plt.show()
 
+
 im1, im2, mask, blended = blending_example2()
 plt.imshow(im1)
 plt.show()
