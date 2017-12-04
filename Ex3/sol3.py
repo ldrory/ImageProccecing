@@ -103,6 +103,10 @@ def build_gaussian_pyramid(im, max_levels, filter_size):
     # create filter vec
     filter_vec = gaussian_kernel(filter_size)
 
+    # max deep to 16*16
+    depth = int(np.floor(np.math.log(min(im.shape), 2))) - 4
+    max_levels = depth if max_levels > depth else max_levels
+
     pyr = [im]
     for i in range(max_levels - 1):
         pyr.append(reduce_im(pyr[i], filter_vec))
@@ -114,6 +118,10 @@ def build_laplacian_pyramid(im, max_levels, filter_size):
 
     # build the gaussian pyramid
     gaus_pyr, filter_vec = build_gaussian_pyramid(im, max_levels, filter_size)
+
+    # max deep to 16*16
+    depth = int(np.floor(np.math.log(min(im.shape), 2))) - 4
+    max_levels = depth if max_levels > depth else max_levels
 
     # build the laplacian pyramid
     pyr = []
@@ -164,18 +172,21 @@ def display_pyramid(pyr, levels):
     plt.show()
 
 
-def pyramid_blending(im1, im2, mask, mask_levels, filter_size_im, filter_size_mask):
+def pyramid_blending(im1, im2, mask, max_levels, filter_size_im, filter_size_mask):
 
-    # form it into float64
-    mask = mask.astype(np.float64)
+    # max deep to 16*16
+    depth1 = int(np.floor(np.math.log(min(im1.shape), 2))) - 4
+    depth2 = int(np.floor(np.math.log(min(im2.shape), 2))) - 4
+    depth = min(depth1, depth2)
+    max_levels = depth if max_levels > depth else max_levels
 
     # get the pyramids
-    lpyr1, filter_vec = build_laplacian_pyramid(im1, mask_levels, filter_size_im)
-    lpyr2, filter_vec = build_laplacian_pyramid(im2, mask_levels, filter_size_im)
-    gpyr_m, filter_vec_m = build_gaussian_pyramid(mask, mask_levels, filter_size_mask)
+    lpyr1, filter_vec = build_laplacian_pyramid(im1, max_levels, filter_size_im)
+    lpyr2, filter_vec = build_laplacian_pyramid(im2, max_levels, filter_size_im)
+    gpyr_m, filter_vec_m = build_gaussian_pyramid(mask.astype(np.float64), max_levels, filter_size_mask)
 
     lpyr_blend = []
-    for i in range(mask_levels):
+    for i in range(max_levels):
         lpyr_blend.append(gpyr_m[i]*lpyr1[i]+(1-gpyr_m[i])*lpyr2[i])
 
     return laplacian_to_image(lpyr_blend, filter_vec, [1]*len(lpyr_blend)).clip(0,1)
@@ -184,13 +195,13 @@ def pyramid_blending(im1, im2, mask, mask_levels, filter_size_im, filter_size_ma
 def blending_example1():
 
     # load files
-    im1 = read_image(relpath('example1\\im1.jpg'), 2)
-    im2 = read_image(relpath('example1\\im2.jpg'), 2)
-    mask = read_image(relpath('example1\\mask.jpg'), 1)
+    im1 = read_image(relpath('example1/im1.jpg'), 2)
+    im2 = read_image(relpath('example1/im2.jpg'), 2)
+    mask = read_image(relpath('example1/mask.jpg'), 1)
     mask = mask.astype(np.bool)
 
     # initialized parameters
-    mask_levels, filter_size_im, filter_size_mask = [250, 5, 5]
+    mask_levels, filter_size_im, filter_size_mask = [5, 5, 5]
 
     # blend images @ red, green, blue
     r = pyramid_blending(im1[:, :, 0], im2[:, :, 0], mask, mask_levels, filter_size_im, filter_size_mask)
@@ -203,13 +214,13 @@ def blending_example1():
 def blending_example2():
 
     # load files
-    im1 = read_image(relpath('example2\\im1.jpg'), 2)
-    im2 = read_image(relpath('example2\\im2.jpg'), 2)
-    mask = read_image(relpath('example2\\mask.jpg'), 1)
+    im1 = read_image(relpath('example2/im1.jpg'), 2)
+    im2 = read_image(relpath('example2/im2.jpg'), 2)
+    mask = read_image(relpath('example2/mask.jpg'), 1)
     mask = mask.astype(np.bool)
 
     # initialized parameters
-    mask_levels, filter_size_im, filter_size_mask = [100, 15, 11]
+    mask_levels, filter_size_im, filter_size_mask = [5, 15, 11]
 
     # blend images @ red, green, blue
     r = pyramid_blending(im1[:, :, 0], im2[:, :, 0], mask, mask_levels, filter_size_im, filter_size_mask)
