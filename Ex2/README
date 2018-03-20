@@ -4,3 +4,8 @@ answer_q1.txt
 answer_q2.txt
 answer_q3.txt
 
+The purpose of this exercise is to help you understand the concept of the frequency domain by
+performing simple manipulations on images. This exercise covers:
+• Implementing Discrete Fourier Transform (DFT) on 1D and 2D signals
+• Performing image derivative
+• Convolution theory
