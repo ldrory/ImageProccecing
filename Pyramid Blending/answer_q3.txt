@@ -1,0 +1,5 @@
+when we use more levels of the max_leves ( level of pyramid)
+the blending between im1&im2 will be better, and more smooth
+
+that is happend because more frequenices blends together, (each level differt freq)
+and this is make a better result

@@ -1,0 +1,7 @@
+In each of the pyramid levels we see different frequncies so if we will 
+multiply each level by coeff value we will give a different wiegth 
+to every part of frequencies and we will get a filter effect.
+and the higher of coeff the more of that freq we'll see
+
+pyr[0] ->...->pry[n]
+higher freq -> low freq

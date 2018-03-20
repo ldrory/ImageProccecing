@@ -1,0 +1,8 @@
+When we change the images filter size,
+the conv will make a lowpass filter on each level of the pyramid
+more size of the filter -> more lowpass filter (blurrs more)
+
+For smaller filter the convolution we will lose less information (of high freq),
+so the image will have more sharp details.
+
+as we increase the filter most of the frequencies are in the first layer of the pyramids.
